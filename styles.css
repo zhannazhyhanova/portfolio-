@@ -253,6 +253,7 @@ img{ max-width:100%; display:block; }
 }
 
 .item__body{
+    display: none;
     padding: 12px 14px 14px;
 }
 .item__title{
@@ -354,4 +355,8 @@ img{ max-width:100%; display:block; }
     display:block;
     border-radius: 12px;
     background: rgba(255,255,255,.03);
+}
+/* Personal: last items as 3:4 */
+#gridPersonal .item:nth-last-child(-n+4) .item__media {
+    aspect-ratio: 3 / 4;
 }

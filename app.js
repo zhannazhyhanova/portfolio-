@@ -1,6 +1,7 @@
 // app.js — FAST gallery via gallery.json + thumb/full
 // Grid loads:  assets/thumb/<file>
 // Modal loads: assets/full/<file> only on click
+const PERSONAL_LAST_PORTRAIT_COUNT = 4; // скільки останніх у Personal зробити 3:4
 
 const GALLERY_URL = "./gallery.json";
 const THUMB_DIR = "./assets/thumb/";
