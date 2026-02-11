@@ -29,7 +29,7 @@ img{ max-width:100%; display:block; }
     margin:0 auto;
 }
 
-/* ---- global bg (NO image here) ---- */
+/* ---- global bg ---- */
 .bg{
     position:fixed;
     inset:0;
@@ -48,7 +48,13 @@ img{ max-width:100%; display:block; }
     background: rgba(10,12,14,.55);
     backdrop-filter: blur(10px);
     border-bottom: 1px solid rgba(255,255,255,.08);
+    will-change: transform;
+    transition: transform .22s ease;
 }
+.nav.nav--hidden{
+    transform: translateY(-100%);
+}
+
 .nav__inner{
     height:64px;
     display:flex;
@@ -87,23 +93,37 @@ img{ max-width:100%; display:block; }
     border-radius:2px;
 }
 
+/* ======= MOBILE MENU (overlay, not taking space) ======= */
 .mobileMenu{
-    display:none;
-    border-top:1px solid rgba(255,255,255,.08);
-    padding:10px 24px 14px;
-    background: rgba(10,12,14,.70);
+    /* базово: overlay поверх сторінки */
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    display: none; /* вмикаємо тільки коли відкрито */
+
+    background: rgba(10,12,14,.92);
+    backdrop-filter: blur(14px);
+
+    padding: 86px 24px 24px; /* щоб не залізало під nav */
 }
 .mobileMenu a{
     display:block;
-    padding:10px 0;
-    color: var(--muted);
+    padding:14px 0;
+    font-size: 18px;
+    color: rgba(255,255,255,.85);
+    border-bottom: 1px solid rgba(255,255,255,.10);
 }
-.mobileMenu a:hover{ color: var(--text); }
+.mobileMenu a:last-child{ border-bottom: none; }
 
+/* class when open */
+.mobileMenu.is-open{
+    display: block;
+}
+
+/* desktop */
 @media (max-width: 760px){
     .nav__links{ display:none; }
     .burger{ display:inline-block; }
-    .mobileMenu{ display:block; }
 }
 
 /* ---- HERO ---- */
@@ -118,19 +138,15 @@ img{ max-width:100%; display:block; }
     inset:0;
     z-index:-1;
 
-    /* 1) твоя картинка (якщо є) */
     background-image:
             linear-gradient(to bottom, rgba(10,12,14,.55), rgba(10,12,14,.75)),
             url("./assets/Artwork.webp");
     background-size: cover;
     background-position: center;
     background-repeat:no-repeat;
-
-    /* якщо немає картинки — буде просто градієнт зверху */
     filter: saturate(1.05);
 }
 
-/* підстрахуємо, щоб hero не “з’їдав” весь сайт */
 .hero__content{
     padding: 36px 0 24px;
 }
@@ -192,10 +208,7 @@ img{ max-width:100%; display:block; }
 }
 
 /* ---- sections ---- */
-.section{ padding: 34px 0;
-    margin: auto;
-
-}
+.section{ padding: 34px 0; }
 .section--bottom{ padding-bottom: 70px; }
 
 .section__title{
@@ -253,7 +266,7 @@ img{ max-width:100%; display:block; }
 }
 
 .item__body{
-    display: none;
+    display: none; /* ти сам вимкнув */
     padding: 12px 14px 14px;
 }
 .item__title{
@@ -316,7 +329,7 @@ img{ max-width:100%; display:block; }
 }
 
 .modal__top{
-    display:flex;
+    display:none; /* ти сам вимкнув */
     align-items:center;
     justify-content:space-between;
     gap:12px;
@@ -356,6 +369,7 @@ img{ max-width:100%; display:block; }
     border-radius: 12px;
     background: rgba(255,255,255,.03);
 }
+
 /* Personal: last items as 3:4 */
 #gridPersonal .item:nth-last-child(-n+4) .item__media {
     aspect-ratio: 3 / 4;
