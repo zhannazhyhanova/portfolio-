@@ -1,10 +1,6 @@
-// app.js — FAST gallery via gallery.json + thumb/full
-
 const GALLERY_URL = "./gallery.json";
 const THUMB_DIR = "./assets/thumb/";
 const FULL_DIR = "./assets/full/";
-
-// How many first NFT items should load ASAP (visible first)
 const PRIORITY_FIRST_SECTION_COUNT = 6;
 
 const SECTIONS = [
@@ -25,22 +21,21 @@ function escapeHtml(s) {
 function makePlaceholderSvg(title = "Artwork") {
     const safe = escapeHtml(title);
     const svg = `
-    <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="750" viewBox="0 0 1200 750">
-      <defs>
-        <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
-          <stop offset="0" stop-color="#0b0f14"/>
-          <stop offset="1" stop-color="#111824"/>
-        </linearGradient>
-      </defs>
-      <rect width="1200" height="750" fill="url(#g)"/>
-      <rect x="60" y="60" width="1080" height="630" rx="36"
-        fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.14)" stroke-width="3"/>
-      <g fill="rgba(255,255,255,0.55)" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace">
-        <text x="110" y="170" font-size="34">Image not found</text>
-        <text x="110" y="225" font-size="22" fill="rgba(255,255,255,0.38)">${safe}</text>
-      </g>
-    </svg>
-  `.trim();
+  <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="750" viewBox="0 0 1200 750">
+    <defs>
+      <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
+        <stop offset="0" stop-color="#0b0f14"/>
+        <stop offset="1" stop-color="#111824"/>
+      </linearGradient>
+    </defs>
+    <rect width="1200" height="750" fill="url(#g)"/>
+    <rect x="60" y="60" width="1080" height="630" rx="36"
+      fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.14)" stroke-width="3"/>
+    <g fill="rgba(255,255,255,0.55)" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace">
+      <text x="110" y="170" font-size="34">Image not found</text>
+      <text x="110" y="225" font-size="22" fill="rgba(255,255,255,0.38)">${safe}</text>
+    </g>
+  </svg>`.trim();
     return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
 }
 
@@ -104,7 +99,7 @@ function buildSectionFromList(section, files, isFirstSection) {
     root.innerHTML = items.join("");
 }
 
-// Fallback if thumb fails
+// thumb fallback
 document.addEventListener(
     "error",
     (e) => {
@@ -140,7 +135,7 @@ function openModal({ title, type, fullUrl }) {
     document.body.style.overflow = "hidden";
 
     modalImg.alt = title || "Artwork";
-    modalImg.src = ""; // reset
+    modalImg.src = "";
     modalImg.onerror = () => {
         modalImg.onerror = null;
         modalImg.src = makePlaceholderSvg(title || "Artwork");
@@ -175,13 +170,12 @@ document.addEventListener("click", (e) => {
 
 if (modalBackdrop) modalBackdrop.addEventListener("click", closeModal);
 if (modalClose) modalClose.addEventListener("click", closeModal);
-document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") closeModal();
-});
 
-// ---------- Mobile menu (FIXED) ----------
+// ---------- Mobile menu (close btn + backdrop + scroll) ----------
 const burgerBtn = document.getElementById("burgerBtn");
 const mobileMenu = document.getElementById("mobileMenu");
+const mobileMenuBackdrop = document.getElementById("mobileMenuBackdrop");
+const mobileMenuClose = document.getElementById("mobileMenuClose");
 const nav = document.querySelector(".nav");
 
 function isMobile() {
@@ -192,6 +186,8 @@ function openMenu() {
     if (!mobileMenu) return;
     mobileMenu.classList.add("is-open");
     mobileMenu.removeAttribute("hidden");
+    mobileMenu.setAttribute("aria-hidden", "false");
+    if (burgerBtn) burgerBtn.setAttribute("aria-expanded", "true");
     document.body.style.overflow = "hidden";
 }
 
@@ -199,6 +195,8 @@ function closeMenu() {
     if (!mobileMenu) return;
     mobileMenu.classList.remove("is-open");
     mobileMenu.setAttribute("hidden", "");
+    mobileMenu.setAttribute("aria-hidden", "true");
+    if (burgerBtn) burgerBtn.setAttribute("aria-expanded", "false");
     document.body.style.overflow = "";
 }
 
@@ -209,19 +207,19 @@ if (burgerBtn && mobileMenu) {
         else openMenu();
     });
 
-    // close on link click
+    if (mobileMenuBackdrop) mobileMenuBackdrop.addEventListener("click", closeMenu);
+    if (mobileMenuClose) mobileMenuClose.addEventListener("click", closeMenu);
+
     mobileMenu.addEventListener("click", (e) => {
         if (e.target.tagName === "A") closeMenu();
     });
 
-    // close on resize to desktop
     window.addEventListener("resize", () => {
         if (!isMobile()) closeMenu();
     });
 }
 
-// hide header on scroll down, show on scroll up (mobile only)
-// also: close menu when user starts scrolling
+// hide header on scroll down (mobile), show on scroll up
 let lastY = window.scrollY;
 let ticking = false;
 
@@ -241,7 +239,6 @@ window.addEventListener("scroll", () => {
                 closeMenu();
             }
 
-            // ховаємо нав якщо реально скролимо вниз
             if (goingDown && y > 120 && delta > 6) nav.classList.add("nav--hidden");
             else if (!goingDown && delta > 6) nav.classList.remove("nav--hidden");
 
@@ -249,6 +246,13 @@ window.addEventListener("scroll", () => {
             ticking = false;
         });
         ticking = true;
+    }
+});
+
+document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+        closeModal();
+        closeMenu();
     }
 });
 
