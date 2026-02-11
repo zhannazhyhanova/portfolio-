@@ -121,7 +121,7 @@ img{ max-width:100%; display:block; }
     /* 1) твоя картинка (якщо є) */
     background-image:
             linear-gradient(to bottom, rgba(10,12,14,.55), rgba(10,12,14,.75)),
-            url("./assets/Artwork.png");
+            url("./assets/Artwork.webp");
     background-size: cover;
     background-position: center;
     background-repeat:no-repeat;
@@ -192,7 +192,10 @@ img{ max-width:100%; display:block; }
 }
 
 /* ---- sections ---- */
-.section{ padding: 34px 0; }
+.section{ padding: 34px 0;
+    margin: auto;
+
+}
 .section--bottom{ padding-bottom: 70px; }
 
 .section__title{
